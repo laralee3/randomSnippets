@@ -14,6 +14,12 @@ var randomSmackPicker = function () {
 	function randomPicker(a, b) {
 		(Math.random() >= 0.5) ? a.click(): b.click();
 	}
+	
+	// TODO - Add seed weights
+	//function randomPicker(a, b) {
+	//	var weight = ((b - a) / maxSeedDifference) * 0.5;
+	//	(Math.random() <= 0.5 + weight) ? a.click(): b.click();
+    	//}
 
 	// Math.random() * (max - min) + min
 	function finalScoreGenerator() {
