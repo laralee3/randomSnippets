@@ -27,7 +27,6 @@
         "key-spacing": 2,
         "keyword-spacing": 2,
         "guard-for-in": 2,
-        "max-len": [2, {"ignoreUrls": true}],
         "new-cap": 2,
         "no-var": 2,
         "no-console": 0,
