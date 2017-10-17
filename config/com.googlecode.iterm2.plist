@@ -225,6 +225,8 @@
 	</dict>
 	<key>Default Bookmark Guid</key>
 	<string>EE564004-6B29-4608-88C7-0B81974F6EBC</string>
+	<key>DimOnlyText</key>
+	<true/>
 	<key>HideMenuBarInFullscreen</key>
 	<true/>
 	<key>HideScrollbar</key>
@@ -282,7 +284,7 @@
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>671 46 599 519 0 0 1440 878 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>269 303 796 473 0 0 1440 878 </string>
+	<string>554 232 796 473 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 4 1440 874 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
@@ -1878,7 +1880,7 @@
 	<key>ShowFullScreenTabBar</key>
 	<true/>
 	<key>SplitPaneDimmingAmount</key>
-	<real>0.17735627003205134</real>
+	<real>0.59999999999999998</real>
 	<key>TabStyle</key>
 	<integer>1</integer>
 	<key>TabViewType</key>
