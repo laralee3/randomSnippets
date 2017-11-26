@@ -91,47 +91,51 @@
 
         var useHTMLEncounterDefine = true;
 
-        var dpsPctColor = 'rgba(15, 219, 35, 0.22)'; // Set dps % bar color; accepts color name, hex, rgb, or rgba. Set to null or empty string to disable
+        // Set dps % bar color; accepts color name, hex, rgb, or rgba. Set to null or empty string to disable
+        var dpsPctColor = 'rgba(119, 19, 28, 0.7)'; 
+
+        // Enable First name only parsing
+        var firstNameOnly = true;
 
         var headerDefine =
             [
                 // { text: "#", width: "5%", align: "center" },
                 {text: "", width: "2%", align: "center"},
-                {text: "Name", width: "10%", align: "left"},
-                
+                {text: "Name", width: "5%", align: "left"},        
                 // {text: "DPS", width: "5%", align: "center"},
                 // {text: "DPS %", width: "5%", align: "center"},
-                {text: "DPS (%)", width: "8%", align: "center"},
+                {text: "DPS", width: "7%", align: "left"},
                 // {text: "Crt %", width: "5%", align: "center"},
                 // {text: "DH %", width: "5%", align: "center"},
                 // {text: "HPS", width: "5%", align: "center"},
                 // {text: "Heal %", width: "5%", align: "center"},
-                {text: "Heal (%) [overheal]", width: "12%", align: "center"},
+                {text: "Heal", width: "9%", align: "left"},
+                {text: "Crits", width: "4%", align: "left"},
                 // {text: "OverHeal", width: "5%", align: "center"},
                 // {text: "Healed", width: "5%", align: "center"},
-                {text: "DmgTaken (%)", width: "8%", align: "center"},
+                {text: "DmgTaken", width: "5%", align: "left"},
                 // {text: "Misses", width: "5%", align: "center"},              
-                {text: "Deaths", width: "5%", align: "center"},
+                {text: "Deaths", width: "3%", align: "center"},
                 // { text: "Max Hit", width: "14%", align: "center" },
             ];
 
         var bodyDefine =
             [
-                // { text: rankingText, width: "", align: "center"},
-                
+                // { text: rankingText, width: "", align: "center"},     
                 {html: "<img src='./images/glow/{JobOrName}.png' onError=\"this.onerror=null;this.src='./images/glow/error.png';\" />", width: "5%", align: "center"},
                 {text: "{newName}", width: "", effect: userTextEffect},
                 // {text: "{encdps}", width: "", align: "center"},
                 // {text: "{damage%}", width: "", align: "center"},
-                {text: "{encdps} ({damage%})", width: "", align: "center"},
+                {text: "{encdps} ({damage%})", width: "", align: "left"},
                 // {text: "{crithit%}", width: "", align: "center" },
                 // {text: "{DirectHitPct}", width: "", align: "center"},
                 // {text: "{enchps}", width: "", align: "center"},
                 // {text: "{healed%}", width: "", align: "center"},
-                {text: "{enchps} ({healed%}) [+{OverHealPct}]", width: "", align: "center"},
+                {text: "{enchps} ({healed%}) [+{OverHealPct}]", width: "", align: "left"},
+                {text: "{custom-Crits} ({custom-CritPct})", width: "", align: "left", effect: healerOrNotTextEffect},
                 // {text: "{OverHealPct}", width: "", align: "center"},
                 // {text: "{healstaken}", width: "", align: "center"},
-                {text: "{damagetaken} ({damagetakenpct})", width: "", align: "center"},
+                {text: "{damagetaken} ({damagetakenpct})", width: "", align: "left"},
                 // {text: "{misses}", width: "", align: "center", effect: redTextEffect},	               
                 {text: "{deaths}", width: "", align: "center", effect: redTextEffect},
                 // { text: "{maxhit}", width: "", align: "left"},
@@ -139,6 +143,7 @@
 
         var partyMaxHitBuffer = "";
         var myMaxHitBuffer = "";
+        var healerClasses = ['Whm', 'Ast', 'Sch'];
 
         function userTextEffect(cell) {
             if (cell.innerText.indexOf("_userFlag") == 0) {
@@ -146,7 +151,7 @@
                     cell.style.color = "#ffcdd2";
                     cell.style.textShadow = "-1px 0 3px #fc5161, 0 1px 3px #fc5161, 1px 0 3px #fc5161, 0 -1px 3px #fc5161";
                 }
-                cell.innerText = characterName;
+                cell.innerText = (firstNameOnly) ? characterName.split(' ')[0] : characterName;
             }
         }
 
@@ -156,6 +161,14 @@
                 cell.style.color = "#ffcdd2";
                 cell.style.textShadow = "-1px 0 3px #fc5161, 0 1px 3px #fc5161, 1px 0 3px #fc5161, 0 -1px 3px #fc5161";
             }
+        }
+
+        function healerOrNotTextEffect(cell, combatant) {
+            var isHealer = healerClasses.indexOf(combatant['Job']) !== -1;
+            var textShadowColor = (isHealer) ? '#05661a' : '#77131c';
+
+            cell.style.color = (isHealer) ? '#8effa6' : '#fc8a95';
+            cell.style.textShadow = '-1px 0 3px ' + textShadowColor + ', 0 1px 3px ' + textShadowColor + ', 1px 0 3px ' + textShadowColor + ', 0 -1px 3px ' + textShadowColor;
         }
 
         function rankingText(combatant, index) {
@@ -175,6 +188,7 @@
         });
 
         function update(data) {
+            console.log('data ', data);
             appendDmgPct(data);
             updateEncounter(data);
             if (document.getElementById("combatantTableHeader") == null) {
@@ -292,6 +306,8 @@
                             if (bodyDefine[i].text.indexOf('{encdps}') !== -1 && dpsPctColor) {
                                 var dpsPct = cellText.match(/[0-9]*%/g)[0];
                                 cell.style.backgroundImage = '-webkit-linear-gradient(left, ' + dpsPctColor + ', ' + dpsPctColor + ' ' + dpsPct + ', transparent ' + dpsPct + ', transparent 100%)';
+                            } else if (bodyDefine[i].text.indexOf('{newName}') !== -1 && firstNameOnly) {
+                                cellText = cellText.split(' ')[0];
                             }
                         }
                         cell.innerText = cellText;
@@ -347,6 +363,10 @@
                         if (typeof dictionary[tag] !== 'undefined') {
                             result += dictionary[tag];
                         }
+                        else if (tag.indexOf('custom-') !== -1) {
+                            // Custom dictionary parsing here
+                            result += customDictionaryParsing(tag, dictionary);
+                        }
                         else {
                             console.log("parseActFormat: Unknown tag: " + tag);
                             result += "ERROR";
@@ -357,6 +377,24 @@
             } while (currentIndex < str.length);
 
             return result;
+        }
+
+        function customDictionaryParsing (tag, dictionary) {
+            var isHealer = healerClasses.indexOf(dictionary['Job']) !== -1;
+            var text = '';
+
+            switch (tag) {
+                case 'custom-Crits':
+                    text = (isHealer) ? dictionary['critheals'] : dictionary['crithits'];
+                    break;
+                case 'custom-CritPct':
+                    text = (isHealer) ? dictionary['critheal%'] : dictionary['crithit%'];
+                    break;
+                default:
+                    break;
+            }
+
+            return text;
         }
 
         // Momoko's custom maxhit formatting
